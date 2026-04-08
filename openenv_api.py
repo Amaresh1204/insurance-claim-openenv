@@ -30,9 +30,10 @@ def tasks() -> dict:
 
 
 @app.post("/reset", response_model=ResetResult)
-def reset_api(request: ResetRequest) -> ResetResult:
+def reset_api(request: ResetRequest | None = None) -> ResetResult:
     try:
-        return env.reset(clear_json=request.clear_json)
+        clear_json = True if request is None else request.clear_json
+        return env.reset(clear_json=clear_json)
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
