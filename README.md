@@ -77,6 +77,16 @@ uvicorn openenv_api:app --host 0.0.0.0 --port 7860
 python baseline_inference.py
 ```
 
+**Baseline Scores (mock deterministic mode):**
+
+| Task | Difficulty | Score |
+|------|------------|-------|
+| `easy_fraud_detection` | Easy | 1.00 |
+| `medium_policy_alignment` | Medium | 1.00 |
+| `hard_calibrated_reasoning` | Hard | 0.97 |
+
+All scores produced with `use_mock_model=true`. Scores are in `[0.0, 1.0]` and fully reproducible.
+
 ### Reset Behavior
 
 `POST /reset` with `{"clear_json": true}` clears and reinitializes:

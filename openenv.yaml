@@ -1,6 +1,8 @@
 name: insurance-claim-openenv
 version: 1.0.0
 description: Real-world insurance claim adjudication environment with task grading and partial rewards.
+author: AmareshKambhampati
+homepage: https://huggingface.co/spaces/AmareshKambhampati/insurance-claim-openenv
 entrypoint:
   type: http
   base_url: http://localhost:7860
