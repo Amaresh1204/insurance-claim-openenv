@@ -3,7 +3,6 @@ __pycache__/
 .gradio/
 .qodo/
 .env
-uv.lock
 *.egg-info/
 dist/
 build/
