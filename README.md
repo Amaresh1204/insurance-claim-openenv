@@ -1,156 +1,85 @@
----
-title: Insurance Claim OpenEnv
-emoji: 🏥
-colorFrom: blue
-colorTo: green
-sdk: docker
-app_port: 7860
-tags:
-  - openenv
-pinned: false
----
+# Insurance Claim AI System - Complete Implementation ✅
 
-# Insurance Claim AI — OpenEnv Environment ✅
+## OpenEnv FastAPI Mode (Hackathon)
 
-## Environment Description
+This project now includes a complete OpenEnv-style environment API with:
 
-A **real-world insurance claim adjudication environment** where an AI agent processes PDF insurance documents, detects fraud, evaluates policy compliance, and makes approve/reject decisions with calibrated confidence scores. Includes a human-in-the-loop feedback system that adjusts confidence calibration at inference time.
+- `POST /step`
+- `POST /reset`
+- `GET /state`
+- `GET /tasks`
 
-**Why this matters:** Insurance claim adjudication is a task millions of humans do daily, involving document analysis, rule-based validation, and nuanced decision-making — ideal for evaluating and training AI agents.
+Files added for this mode:
 
----
+- `openenv_api.py` — FastAPI service exposing `step/reset/state`
+- `openenv_core.py` — Typed models, task graders, reward breakdown
+- `openenv.yaml` — OpenEnv environment spec
+- `baseline_inference.py` — reproducible baseline scores (deterministic mode)
+- `Dockerfile` — Hugging Face Spaces deployment
 
-## OpenEnv API Endpoints
+### Action Space
 
-| Method | Path | Request Model | Response Model |
-|--------|------|---------------|----------------|
-| `POST` | `/reset` | `ResetRequest` | `ResetResult` |
-| `POST` | `/step` | `StepAction` | `StepResult` |
-| `GET` | `/state` | — | `StateResult` |
-| `GET` | `/health` | — | `{"status": "ok"}` |
-| `GET` | `/tasks` | — | Task definitions |
+`StepAction` (typed):
 
----
+- `pdf_path: str`
+- `task_id: str` (`easy_fraud_detection`, `medium_policy_alignment`, `hard_calibrated_reasoning`)
+- `use_mock_model: bool` (set `true` for reproducible baseline)
+- `submit_feedback: bool`
+- `correct_decision: Optional[str]`
+- `feedback_reason: str`
+- `feedback_details: str`
 
-## Action Space (`StepAction`)
+### Observation Space
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `pdf_path` | `str` | Path to claim PDF |
-| `task_id` | `str` | Task grader: `easy_fraud_detection`, `medium_policy_alignment`, `hard_calibrated_reasoning` |
-| `use_mock_model` | `bool` | Use deterministic path for reproducible scores |
-| `submit_feedback` | `bool` | If `true`, feedback fields are recorded |
-| `correct_decision` | `str?` | `Approved`/`Rejected` (when submitting feedback) |
-| `feedback_reason` | `str` | Reason category |
-| `feedback_details` | `str` | Optional details |
+`Observation` (typed):
 
-## Observation Space (`Observation`)
+- `parsed_decision: str`
+- `confidence_score: float`
+- `fraud_detected: bool`
+- `insurer_detected: str`
+- `policy_fit_score: float`
+- `recommendation: str`
+- `reward_model: float`
+- `structured_claim_data: dict`
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `parsed_decision` | `str` | `Approved` or `Rejected` |
-| `confidence_score` | `float` | 0.0-1.0 calibrated confidence |
-| `fraud_detected` | `bool` | Whether fraud was flagged |
-| `insurer_detected` | `str` | Detected insurer name |
-| `policy_fit_score` | `float` | 0.0-1.0 policy alignment |
-| `recommendation` | `str` | Final recommendation text |
-| `reward_model` | `float` | Raw reward from env scoring |
-| `structured_claim_data` | `dict` | Extracted claim JSON data |
+### Reward Model
 
-## Reward Model (`RewardBreakdown`)
+Each task uses a grader returning score `0.0-1.0` with partial reward components:
 
-Each task grader returns a score in `[0.0, 1.0]` with 6 partial credit components:
-- **Decision correctness** — Did the agent make the right call?
-- **Fraud handling** — Was fraud properly detected/dismissed?
-- **Policy alignment** — Does the decision match policy criteria?
-- **Confidence calibration** — Is confidence appropriately calibrated?
-- **Explanation quality** — Is the reasoning grounded and detailed?
-- **Feedback influence** — Did the agent use feedback effectively? (hard task)
+- decision correctness
+- fraud handling
+- policy alignment
+- confidence calibration
+- explanation quality
+- feedback influence (hard task)
 
----
+### Run OpenEnv API
 
-## Tasks (3 difficulty levels)
-
-| Task ID | Difficulty | Objective | Baseline Score |
-|---------|-----------|-----------|---------------|
-| `easy_fraud_detection` | Easy | Detect insurer/policy mismatch fraud and reject with clear rationale | **1.000** |
-| `medium_policy_alignment` | Medium | Align decision with policy checks and claim data consistency | **1.000** |
-| `hard_calibrated_reasoning` | Hard | Produce calibrated confidence and grounded reasoning with consistency | **0.968** |
-
-**Mean baseline score: 0.989** (deterministic mock model)
-
----
-
-## Setup & Usage
-
-### 1. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 2. Configure environment variables
-```bash
-export API_BASE_URL="https://router.huggingface.co/v1"
-export MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
-export HF_TOKEN="your_hf_token"
-```
-
-### 3. Run the OpenEnv API server
 ```bash
 uvicorn openenv_api:app --host 0.0.0.0 --port 7860
 ```
 
-### 4. Run the agent inference script
-```bash
-python inference.py
-```
+### Run Reproducible Baseline
 
-### 5. Run the reproducible baseline (deterministic, no LLM)
 ```bash
 python baseline_inference.py
 ```
 
-### 6. Launch the Gradio Web UI (optional)
+### Reset Behavior
+
+`POST /reset` with `{"clear_json": true}` clears and reinitializes:
+
+- `claims_history.json`
+- `feedback_log.json`
+- `memory.json`
+
+### Hugging Face Spaces (Docker)
+
+This repo includes `Dockerfile` with startup command:
+
 ```bash
-python app.py
+uvicorn openenv_api:app --host 0.0.0.0 --port 7860
 ```
-
----
-
-## Docker Deployment
-
-```bash
-docker build -t insurance-claim-openenv .
-docker run -p 7860:7860 insurance-claim-openenv
-```
-
-### Hugging Face Spaces
-- SDK: `Docker`
-- Port: `7860`
-- Tag: `openenv`
-
-Push this repository to a Hugging Face Space with Docker SDK.
-
----
-
-## Project Structure
-
-| File | Purpose |
-|------|---------|
-| `openenv.yaml` | OpenEnv environment specification |
-| `openenv_core.py` | Typed models, task graders, reward breakdown, env class |
-| `openenv_api.py` | FastAPI server exposing step/reset/state endpoints |
-| `inference.py` | Hackathon agent script — uses OpenAI client + HTTP env calls |
-| `baseline_inference.py` | Reproducible baseline (deterministic mock model) |
-| `claim_pipeline.py` | Core claim processing pipeline (PDF to LLM to decision) |
-| `claim_assessor.py` | Structured data extraction and policy evaluation |
-| `fraud_detector.py` | Multi-layer fraud detection |
-| `feedback_handler.py` | Human-in-the-loop feedback calibration engine |
-| `insurer_policy_loader.py` | Insurer-specific policy criteria loader |
-| `env.py` | Low-level reward scoring environment |
-| `app.py` | Gradio Web UI |
-| `ui.py` | UI layout definitions |
-| `Dockerfile` | Container deployment |
 
 Use Space SDK: `Docker`, then push this repository.
 
@@ -172,7 +101,7 @@ This is a **production-ready Insurance Claim Decision System** with:
 ### 1. Process Your First Claim
 
 ```bash
-python claim_pipeline.py sample.pdf
+python inference.py sample.pdf
 ```
 
 **Output:**
@@ -206,7 +135,7 @@ Then visit `http://localhost:7860` in your browser
 
 ## 📊 What Each Component Does
 
-### **claim_pipeline.py** — Main Pipeline
+### **inference.py** — Main Pipeline
 Orchestrates 13-step claim processing:
 1. Load PDF
 2. Extract structured data (15+ fields)
@@ -392,8 +321,8 @@ Example:
 
 ### Process Claims
 ```bash
-python claim_pipeline.py                      # Default: sample.pdf
-python claim_pipeline.py path/to/claim.pdf    # Custom PDF
+python inference.py                      # Default: sample.pdf
+python inference.py path/to/claim.pdf    # Custom PDF
 ```
 
 ### Feedback Management
@@ -506,20 +435,20 @@ python app.py
 
 ### 1. Verify Imports
 ```bash
-python -c "from claim_pipeline import run_inference; print('OK')"
+python -c "from inference import run_inference; print('OK')"
 python -c "from feedback_cli import *; print('OK')"
 python -c "from app import interface; print('OK')"
 ```
 
 ### 2. Test Fraud Detection
 ```bash
-python claim_pipeline.py sample.pdf
+python inference.py sample.pdf
 # Should show: FRAUD DETECTED with Starhealth/HDFC mismatch
 ```
 
 ### 3. Test Valid Claim
 ```bash
-python claim_pipeline.py sample_valid.pdf
+python inference.py sample_valid.pdf
 # Should show: APPROVED with 1.0 confidence
 ```
 
@@ -563,14 +492,14 @@ python feedback_cli.py stats
 
 ### For Users:
 1. Read **README.md** (this file) ← You are here
-2. Run `python claim_pipeline.py sample.pdf` (see it work)
+2. Run `python inference.py sample.pdf` (see it work)
 3. Read **FEEDBACK_GUIDE.md** (learn feedback system)
 4. Run `python feedback_cli.py add` (provide first feedback)
 5. Observe confidence adjustments in future runs
 
 ### For Developers:
 1. Understand data flow: PDF → JSON → LLM → Confidence
-2. Review **claim_pipeline.py** main pipeline
+2. Review **inference.py** main pipeline
 3. Study **claim_assessor.py** scoring logic
 4. Explore **feedback_handler.py** calibration algorithm
 5. Extend policies in **policy_criterias/** folder
@@ -600,7 +529,7 @@ Provide feedback on borderline claims (0.5-0.7 confidence) first—those are whe
 
 | Feature | Status | Command |
 |---------|--------|---------|
-| Claim Processing | ✅ Active | `python claim_pipeline.py <pdf>` |
+| Claim Processing | ✅ Active | `python inference.py <pdf>` |
 | Fraud Detection | ✅ Active | (automatic in inference) |
 | Policy Matching | ✅ Active | (automatic in inference) |
 | Confidence Scoring | ✅ Active | (automatic in inference) |
@@ -653,7 +582,7 @@ You now have a **production-ready Insurance Claim AI system** that:
 **Ready to process your first claim?** 🚀
 
 ```bash
-python claim_pipeline.py your_document.pdf
+python inference.py your_document.pdf
 ```
 
 ---

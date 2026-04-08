@@ -31,13 +31,28 @@ class StepAction(BaseModel):
 	)
 	submit_feedback: bool = Field(
 		False,
-		description="If true, feedback fields are recorded for the previous observation.",
+		description=(
+			"If true, submit feedback for the previous observation. "
+			"Call one normal step first, then send feedback on the next step."
+		),
 	)
 	correct_decision: Optional[str] = Field(
-		None, description="Approved/Rejected; used only when submit_feedback=true."
+		None,
+		description=(
+			"Approved or Rejected. Required when submit_feedback=true."
+		),
 	)
-	feedback_reason: str = Field("Policy mismatch")
-	feedback_details: str = Field("")
+	feedback_reason: str = Field(
+		"Policy mismatch",
+		description=(
+			"Feedback category. Suggested values: Policy mismatch, Fraud misclassification, "
+			"Missing data, Incorrect validation, Other."
+		),
+	)
+	feedback_details: str = Field(
+		"",
+		description="Optional free-text details explaining why the decision was incorrect.",
+	)
 
 
 class Observation(BaseModel):
