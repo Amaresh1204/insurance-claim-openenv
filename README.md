@@ -14,6 +14,8 @@ pinned: false
 
 **A real-world OpenEnv environment for training and evaluating AI agents on insurance claim adjudication.**
 
+**Accepted insurers:** Only **HDFC ERGO** and **Star Health** claims are accepted.
+
 - **HF Space (live demo):** https://huggingface.co/spaces/AmareshKambhampati/insurance-claim-openenv
 - **GitHub:** https://github.com/Amaresh1204/insurance-claim-openenv
 - **OpenEnv interface:** `POST /step` · `POST /reset` · `GET /state` · `GET /tasks`
