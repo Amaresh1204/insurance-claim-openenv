@@ -1,3 +1,13 @@
+---
+title: Insurance Claim OpenEnv
+emoji: "🛡️"
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Insurance Claim AI System - Complete Implementation ✅
 
 ## OpenEnv FastAPI Mode (Hackathon)
