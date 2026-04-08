@@ -1,0 +1,48 @@
+{
+  "insurer": "Star Health",
+  "policy_name": "Comprehensive Health Insurance",
+  "claim_approval_criteria": {
+    "policy_status": "active",
+    "premium_paid": true,
+    "insured_person_match": true,
+    "hospitalization_required": true,
+    "minimum_hospitalization_hours": 24,
+    "room_rent_limit_applicable": true,
+    "sum_insured_available": true,
+    "waiting_period_completed": {
+      "initial_waiting_days": 30,
+      "pre_existing_disease_years": 3,
+      "specific_illness_years": 2
+    },
+    "documents_required": [
+      "claim_form",
+      "policy_copy",
+      "hospital_discharge_summary",
+      "itemized_hospital_bill",
+      "doctor_prescription",
+      "diagnostic_reports",
+      "id_proof"
+    ],
+    "pre_authorization_required_for_cashless": true,
+    "submission_timelines": {
+      "cashless_pre_auth_hours_before_admission": 48,
+      "emergency_intimation_hours": 24,
+      "reimbursement_submission_days": 30
+    }
+  },
+  "common_rejection_reasons": [
+    "policy_lapsed_or_inactive",
+    "waiting_period_not_completed",
+    "treatment_under_exclusion",
+    "insufficient_documents",
+    "non_disclosure_or_misrepresentation",
+    "sum_insured_exhausted"
+  ],
+  "typical_exclusions": [
+    "cosmetic_or_aesthetic_procedures",
+    "self_inflicted_injuries",
+    "substance_abuse_related_treatment",
+    "infertility_treatment_unless_covered",
+    "non_medically_necessary_hospitalization"
+  ]
+}

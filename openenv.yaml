@@ -1,0 +1,37 @@
+name: insurance-claim-openenv
+version: 1.0.0
+description: Real-world insurance claim adjudication environment with task grading and partial rewards.
+entrypoint:
+  type: http
+  base_url: http://localhost:7860
+apis:
+  step:
+    method: POST
+    path: /step
+    request_model: StepAction
+    response_model: StepResult
+  reset:
+    method: POST
+    path: /reset
+    request_model: ResetRequest
+    response_model: ResetResult
+  state:
+    method: GET
+    path: /state
+    response_model: StateResult
+tasks:
+  - id: easy_fraud_detection
+    difficulty: easy
+    objective: Detect insurer/policy mismatch fraud and reject with clear rationale.
+  - id: medium_policy_alignment
+    difficulty: medium
+    objective: Align decision with policy checks and claim data consistency.
+  - id: hard_calibrated_reasoning
+    difficulty: hard
+    objective: Produce calibrated confidence and grounded reasoning with robust output consistency.
+reward:
+  range: [0.0, 1.0]
+  style: partial_credit
+  notes:
+    - Uses task-specific graders with reward components.
+    - Returns reward_breakdown for learning diagnostics.

@@ -1,0 +1,151 @@
+{
+  "insurer": "HDFC ERGO",
+  "policy_name": "Health Suraksha / Retail Health Insurance",
+  "claim_approval_criteria": {
+    "policy_status": "active",
+    "premium_paid": true,
+    "insured_person_match": true,
+    "medically_necessary_treatment": true,
+    "hospitalization_required": true,
+    "minimum_hospitalization_hours": 24,
+    "sum_insured_available": true,
+    "co_pay_and_deductible_applicable": true,
+    "waiting_period_completed": {
+      "initial_waiting_days": 30,
+      "pre_existing_disease_years": 3,
+      "specific_illness_years": 2
+    },
+    "documents_required": [
+      "claim_form",
+      "policy_schedule",
+      "discharge_summary",
+      "hospital_bills_and_receipts",
+      "pharmacy_bills",
+      "investigation_reports",
+      "kyc_document"
+    ],
+    "pre_authorization_required_for_cashless": true,
+    "network_hospital_preferred_for_cashless": true,
+    "submission_timelines": {
+      "planned_admission_pre_auth_hours_before": 48,
+      "emergency_intimation_hours": 24,
+      "reimbursement_submission_days": 30
+    }
+  },
+  "common_rejection_reasons": [
+    "policy_not_in_force",
+    "incorrect_or_incomplete_disclosure",
+    "treatment_not_covered",
+    "claim_under_waiting_period",
+    "lack_of_original_documents",
+    "fraudulent_claim_indicators"
+  ],
+  "typical_exclusions": [
+    "experimental_or_unproven_treatments",
+    "cosmetic_surgery_unless_medically_necessary",
+    "war_or_nuclear_risk_related_injuries",
+    "intentional_self_harm",
+    "non_allopathic_treatments_if_not_covered"
+  ],
+  "sample_claim_data": [
+    {
+      "claim_id": "HDFC-CLM-2026-001",
+      "policy_number": "HDFC-HS-884211",
+      "insured_name": "Ravi Kumar",
+      "age": 46,
+      "city": "Bengaluru",
+      "admission_type": "planned",
+      "hospital_name": "Apollo Hospitals",
+      "network_hospital": true,
+      "diagnosis": "Coronary artery disease",
+      "procedure": "CABG heart surgery",
+      "claim_type": "cashless",
+      "claim_amount": 285000,
+      "sum_insured": 500000,
+      "waiting_period_status": "completed",
+      "documents_submitted": [
+        "claim_form",
+        "policy_schedule",
+        "discharge_summary",
+        "hospital_bills_and_receipts",
+        "investigation_reports",
+        "kyc_document"
+      ],
+      "expected_decision": "Approved"
+    },
+    {
+      "claim_id": "HDFC-CLM-2026-002",
+      "policy_number": "HDFC-HS-119507",
+      "insured_name": "Anita Sharma",
+      "age": 33,
+      "city": "Hyderabad",
+      "admission_type": "emergency",
+      "hospital_name": "Care Hospitals",
+      "network_hospital": true,
+      "diagnosis": "Acute appendicitis",
+      "procedure": "Laparoscopic appendectomy",
+      "claim_type": "reimbursement",
+      "claim_amount": 92000,
+      "sum_insured": 300000,
+      "waiting_period_status": "completed",
+      "documents_submitted": [
+        "claim_form",
+        "policy_schedule",
+        "discharge_summary",
+        "hospital_bills_and_receipts",
+        "pharmacy_bills",
+        "kyc_document"
+      ],
+      "expected_decision": "Approved"
+    },
+    {
+      "claim_id": "HDFC-CLM-2026-003",
+      "policy_number": "HDFC-HS-557920",
+      "insured_name": "Meera Iyer",
+      "age": 29,
+      "city": "Chennai",
+      "admission_type": "planned",
+      "hospital_name": "Aesthetic Plus Clinic",
+      "network_hospital": false,
+      "diagnosis": "Nasal shape correction",
+      "procedure": "Cosmetic rhinoplasty",
+      "claim_type": "reimbursement",
+      "claim_amount": 145000,
+      "sum_insured": 400000,
+      "waiting_period_status": "completed",
+      "documents_submitted": [
+        "claim_form",
+        "policy_schedule",
+        "hospital_bills_and_receipts",
+        "kyc_document"
+      ],
+      "expected_decision": "Rejected",
+      "expected_rejection_reason": "cosmetic_surgery_unless_medically_necessary"
+    },
+    {
+      "claim_id": "HDFC-CLM-2026-004",
+      "policy_number": "HDFC-HS-300178",
+      "insured_name": "Suresh Patil",
+      "age": 58,
+      "city": "Pune",
+      "admission_type": "emergency",
+      "hospital_name": "Ruby Hall Clinic",
+      "network_hospital": true,
+      "diagnosis": "Diabetic nephropathy",
+      "procedure": "Dialysis sessions",
+      "claim_type": "cashless",
+      "claim_amount": 168000,
+      "sum_insured": 200000,
+      "waiting_period_status": "pre_existing_waiting_not_completed",
+      "documents_submitted": [
+        "claim_form",
+        "policy_schedule",
+        "discharge_summary",
+        "hospital_bills_and_receipts",
+        "investigation_reports"
+      ],
+      "expected_decision": "Rejected",
+      "expected_rejection_reason": "claim_under_waiting_period"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "insurer": "<insurer_name>",
+  "policy_name": "<policy_name>",
+  "claim_approval_criteria": {
+    "policy_status": "active",
+    "premium_paid": true,
+    "insured_person_match": true,
+    "hospitalization_required": true,
+    "minimum_hospitalization_hours": 24,
+    "sum_insured_available": true,
+    "waiting_period_completed": {
+      "initial_waiting_days": 30,
+      "pre_existing_disease_years": 3,
+      "specific_illness_years": 2
+    },
+    "documents_required": [
+      "claim_form",
+      "policy_copy",
+      "discharge_summary",
+      "bills"
+    ]
+  },
+  "common_rejection_reasons": [
+    "policy_lapsed",
+    "waiting_period_not_completed",
+    "excluded_treatment"
+  ],
+  "typical_exclusions": [
+    "cosmetic_procedures",
+    "self_inflicted_injuries"
+  ]
+}
