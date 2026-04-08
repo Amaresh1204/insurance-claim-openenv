@@ -49,7 +49,10 @@ def _confidence_bar(confidence: float) -> str:
     pct = int(confidence * 100)
     filled = round(confidence * 10)
     empty = 10 - filled
-    return f"`{'\u2588' * filled}{'\u2591' * empty}` **{pct}%**"
+    full_block = chr(0x2588)
+    light_block = chr(0x2591)
+    bar = (full_block * filled) + (light_block * empty)
+    return f"`{bar}` **{pct}%**"
 
 
 def _confidence_label(confidence: float) -> str:
