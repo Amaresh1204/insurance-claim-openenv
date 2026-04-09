@@ -273,8 +273,8 @@ def run_task(client: OpenAI, task: dict) -> float:
             # Score is the last reward (the task grader score for the final step)
             score = reward2
 
-        # Clamp score to [0, 1]
-        score = max(0.0, min(1.0, score))
+        # Clamp score to strictly (0, 1) — validator rejects exact 0.0 and 1.0
+        score = max(0.01, min(0.99, score))
         success = score >= SUCCESS_SCORE_THRESHOLD
 
     except Exception as exc:
@@ -282,6 +282,8 @@ def run_task(client: OpenAI, task: dict) -> float:
         print(f"[DEBUG] Task {task['task_id']} error: {exc}", flush=True)
 
     finally:
+        # Ensure score is strictly in (0, 1) even on error paths
+        score = max(0.01, min(0.99, score))
         log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
 
     return score
@@ -295,14 +297,14 @@ def main() -> None:
         print("[DEBUG] ERROR: HF_TOKEN or API_KEY must be set.", flush=True)
         for task in TASKS:
             log_start(task=task["task_id"], env=BENCHMARK, model=MODEL_NAME or "unknown")
-            log_end(success=False, steps=0, score=0.0, rewards=[])
+            log_end(success=False, steps=0, score=0.01, rewards=[])
         return
 
     if not MODEL_NAME:
         print("[DEBUG] ERROR: MODEL_NAME must be set.", flush=True)
         for task in TASKS:
             log_start(task=task["task_id"], env=BENCHMARK, model="unknown")
-            log_end(success=False, steps=0, score=0.0, rewards=[])
+            log_end(success=False, steps=0, score=0.01, rewards=[])
         return
 
     client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)

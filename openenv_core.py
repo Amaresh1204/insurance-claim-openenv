@@ -140,7 +140,7 @@ TASKS = {
 
 
 def _clamp01(value: float) -> float:
-	return max(0.0, min(1.0, round(value, 4)))
+	return max(0.01, min(0.99, round(value, 4)))
 
 
 def _safe_reason_text(result: dict) -> str:
